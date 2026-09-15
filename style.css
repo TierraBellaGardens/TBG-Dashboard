@@ -164,6 +164,65 @@ body {
 
 .loading-placeholder { color: #888; font-style: italic; padding: 10px; }
 
+/* SHOPPING LIST SELECTOR */
+.shop-type-select {
+    flex: 0 0 130px;
+    min-width: 130px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background: #fff;
+    color: var(--text-main);
+    font-size: 1em;
+}
+
+/* ALL SHOPPING ITEMS GROUPED VIEW */
+.shopping-all-section {
+    margin-bottom: 24px;
+}
+
+.shopping-all-section:last-child {
+    margin-bottom: 0;
+}
+
+.shopping-section-title {
+    margin: 0 0 10px 0;
+    padding: 7px 10px;
+    background: #f7f8f7;
+    border-radius: 4px;
+    border-left: 5px solid #777;
+    font-size: 1.05em;
+}
+
+.shop-crew-title { border-left-color: #ff9800; }
+.shop-steph-title { border-left-color: #ff5722; }
+
+/* Make the larger Project notes field look like the existing inputs. */
+.project-description-input {
+    flex: 2 1 320px;
+    min-width: 260px;
+    min-height: 46px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background: #fff;
+    color: var(--text-main);
+    font: inherit;
+    line-height: 1.3;
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+.form-row textarea:disabled {
+    opacity: 0.7;
+    background-color: #f3f3f3;
+}
+
+/* Preserve intentional line breaks entered in Project notes. */
+.task-text {
+    white-space: pre-wrap;
+}
+
 @media (max-width: 768px) {
     .form-row { flex-direction: column; }
     body { padding: 10px; }
@@ -234,8 +293,72 @@ body {
 .proj-major-title { border-left-color: #e91e63; }
 
 @media (max-width: 768px) {
-    .project-type-select {
+    /* Projects: property gets its own row. Category becomes compact,
+       while notes/descriptions gets the majority of the next row. */
+    #projects .form-row {
+        display: grid;
+        grid-template-columns: 105px minmax(0, 1fr);
+        gap: 10px;
+        align-items: stretch;
+    }
+
+    #projects .combobox-wrapper {
+        grid-column: 1 / -1;
         width: 100%;
+        min-width: 0;
+    }
+
+    #projects .project-type-select {
+        grid-column: 1;
+        width: 105px;
+        min-width: 0;
         box-sizing: border-box;
     }
+
+    #projects .project-description-input {
+        grid-column: 2;
+        width: 100%;
+        min-width: 0;
+        min-height: 64px;
+        box-sizing: border-box;
+    }
+
+    #projects .action-btn {
+        grid-column: 1 / -1;
+        width: 100%;
+    }
+
+    /* Shopping gets the same compact category + larger item field layout. */
+    #shopping .form-row {
+        display: grid;
+        grid-template-columns: 105px minmax(0, 1fr);
+        gap: 10px;
+        align-items: stretch;
+    }
+
+    #shopping .combobox-wrapper {
+        grid-column: 1 / -1;
+        width: 100%;
+        min-width: 0;
+    }
+
+    #shopping .shop-type-select {
+        grid-column: 1;
+        width: 105px;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    #shopping #shop-text {
+        grid-column: 2;
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    #shopping .action-btn {
+        grid-column: 1 / -1;
+        width: 100%;
+    }
 }
+
