@@ -25,12 +25,7 @@
     <div class="dashboard-container">
         
         <!-- 1. OVERVIEW VIEW PANEL -->
-        <div id="summary" class="tab-content default-active">
-            <div class="tab-header-block">
-                <h2>Operational Alert Stream</h2>
-                <p>Prioritized items requiring immediate attention:</p>
-            </div>
-            
+        <div id="summary" class="tab-content default-active"> 
             <div class="inline-form">
                 <h4>Quick Logging Entry</h4>
                 <div class="form-row">
@@ -43,6 +38,12 @@
                     <button class="action-btn" onclick="addCustomItem('overview', 'overview-prop', 'overview-text')">Log Alert</button>
                 </div>
             </div>
+            
+            <div class="tab-header-block">
+                <h2>Operational Alert Stream</h2>
+                <p>Prioritized items requiring attention:</p>
+            </div>
+            
             <div id="urgent-stream-container"></div>
         </div>
 
@@ -72,7 +73,7 @@
                 <option value="proj-major">Major</option>
             </select>
 
-            <input type="text" id="project-text" placeholder="Project tasks, notes, or descriptions...">
+            <textarea id="project-text" class="project-description-input" rows="2" placeholder="Project tasks, notes, or descriptions..."></textarea>
             <button class="action-btn" onclick="addProjectItem('project-prop', 'project-text', 'project-type')">Add Project</button>
         </div>
     </div>
@@ -109,8 +110,8 @@
         <!-- 3. NEW INDEPENDENT ISSUES VIEW PANEL -->
         <div id="issue" class="tab-content">
             <div class="tab-header-block">
-                <h2>Property Issues &amp; Critical Hazards</h2>
-                <p>Reported property deficiencies requiring prompt field action:</p>
+                <h2>Property Issues &amp; Concerns</h2>
+                <p>Reported property problems requiring action:</p>
             </div>
             <div class="inline-form">
                 <h4>Report Property Issue</h4>
@@ -131,7 +132,7 @@
         <div id="walkthrough" class="tab-content">
             <div class="tab-header-block">
                 <h2>Manager Walk-Through Worksheets</h2>
-                <p>Property operational tasks synced with operations logs:</p>
+                <p>Property tasks (To be workshopped / integrated with google calender</p>
             </div>
             <div class="inline-form">
                 <h4>Add Inspection Note</h4>
@@ -149,31 +150,56 @@
         </div>
 
         <!-- 5. SHOPPING TAB PANEL -->
-        <div id="shopping" class="tab-content">
-            <div class="sub-tabs-bar">
-                <button class="sub-tab-link active" onclick="openSubTab(event, 'shopping', 'shop-crew')">Crew List</button>
-                <button class="sub-tab-link" onclick="openSubTab(event, 'shopping', 'shop-steph')">Steph's List</button>
+<div id="shopping" class="tab-content">
+    <div class="sub-tabs-bar">
+        <button class="sub-tab-link active" onclick="openSubTab(event, 'shopping', 'shop-all')">All</button>
+        <button class="sub-tab-link" onclick="openSubTab(event, 'shopping', 'shop-crew')">Crew List</button>
+        <button class="sub-tab-link" onclick="openSubTab(event, 'shopping', 'shop-steph')">Steph's List</button>
+    </div>
+
+    <div class="inline-form">
+        <h4>Add Shopping Item</h4>
+        <div class="form-row">
+            <div class="combobox-wrapper">
+                <input type="text" id="shop-prop" class="combo-input" placeholder="Select property reference..." onclick="toggleCombo(this)" oninput="filterCombo(this)">
+                <button class="combo-arrow" onclick="arrowToggleCombo(this, event)">▼</button>
+                <div class="combo-dropdown"></div>
             </div>
 
-            <div class="inline-form">
-                <h4>Add Procurement Demand</h4>
-                <div class="form-row">
-                    <div class="combobox-wrapper">
-                        <input type="text" id="shop-prop" class="combo-input" placeholder="Select property reference..." onclick="toggleCombo(this)" oninput="filterCombo(this)">
-                        <button class="combo-arrow" onclick="arrowToggleCombo(this, event)">▼</button>
-                        <div class="combo-dropdown"></div>
-                    </div>
-                    <input type="text" id="shop-text" placeholder="Items, sizes, quantities, or materials...">
-                    <button class="action-btn" onclick="addContextualItem('shopping', 'shop-prop', 'shop-text')">Add to List</button>
-                </div>
-            </div>
+            <select id="shop-type" class="shop-type-select" aria-label="Shopping list">
+                <option value="shop-crew">Crew</option>
+                <option value="shop-steph">Steph</option>
+            </select>
 
-            <div id="shop-crew" class="sub-tab-content default-sub-active"><div id="shop-crew-container"></div></div>
-            <div id="shop-steph" class="sub-tab-content"><div id="shop-steph-container"></div></div>
+            <input type="text" id="shop-text" placeholder="Items, sizes, quantities, or materials...">
+            <button class="action-btn" onclick="addShoppingItem('shop-prop', 'shop-text', 'shop-type')">Add to List</button>
         </div>
+    </div>
+
+    <div id="shop-all" class="sub-tab-content default-sub-active">
+        <div class="shopping-all-section">
+            <h3 class="shopping-section-title shop-crew-title">Crew List</h3>
+            <div id="shop-all-crew-container"></div>
+        </div>
+
+        <div class="shopping-all-section">
+            <h3 class="shopping-section-title shop-steph-title">Steph's List</h3>
+            <div id="shop-all-steph-container"></div>
+        </div>
+    </div>
+
+    <div id="shop-crew" class="sub-tab-content">
+        <div id="shop-crew-container"></div>
+    </div>
+
+    <div id="shop-steph" class="sub-tab-content">
+        <div id="shop-steph-container"></div>
+    </div>
+</div>
+
 
     </div>
 
-    <script src="app.js?v=4"></script>
+    <script src="app.js?v=5"></script>
 </body>
 </html>
