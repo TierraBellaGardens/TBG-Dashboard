@@ -32,65 +32,86 @@ function openMainTab(evt, tabName) {
 // NESTED CHILD SUB-TAB NAVIGATION ROUTING
 function openSubTab(evt, parentId, subTabId) {
     const parentContainer = document.getElementById(parentId);
-    const subContents = parentContainer.getElementsByClassName("sub-tab-content");
+    const subContents =
+        parentContainer.getElementsByClassName("sub-tab-content");
 
     for (let i = 0; i < subContents.length; i++) {
         subContents[i].style.display = "none";
     }
 
-    const subLinks = parentContainer.getElementsByClassName("sub-tab-link");
+    const subLinks =
+        parentContainer.getElementsByClassName("sub-tab-link");
+
     for (let i = 0; i < subLinks.length; i++) {
-        subLinks[i].className = subLinks[i].className.replace(" active", "");
+        subLinks[i].className =
+            subLinks[i].className.replace(" active", "");
     }
 
     document.getElementById(subTabId).style.display = "block";
     evt.currentTarget.className += " active";
+
     activeSubTabs[parentId] = subTabId;
 
-    // When a specific Projects category is selected, automatically
-    // set the Add Project category selector to match that tab.
-    if (parentId === "projects" && subTabId !== "proj-all") {
-        const projectTypeSelect = document.getElementById("project-type");
-        if (projectTypeSelect) {
-            projectTypeSelect.value = subTabId;
+    updateEntryFormForSubTab(parentId, subTabId);
+
+    closeAllCombos();
+}
+
+
+// SHOW CATEGORY/LIST DROPDOWN ONLY WHILE VIEWING "ALL"
+function updateEntryFormForSubTab(parentId, subTabId) {
+
+    // PROJECTS
+    if (parentId === "projects") {
+        const typeSelect = document.getElementById("project-type");
+
+        if (typeSelect) {
+            const formRow = typeSelect.closest(".form-row");
+            const isAllView = subTabId === "proj-all";
+
+            // Category selector is only needed on All
+            typeSelect.hidden = !isAllView;
+
+            // On a specific tab, automatically use that category
+            if (!isAllView) {
+                typeSelect.value = subTabId;
+            }
+
+            if (formRow) {
+                formRow.classList.toggle(
+                    "category-hidden",
+                    !isAllView
+                );
+            }
         }
     }
 
-    // Do the same for Shopping. "All" is display-only and is never
-    // written into Google Sheets as an item type.
-    if (parentId === "shopping" && subTabId !== "shop-all") {
-        const shoppingTypeSelect = document.getElementById("shop-type");
-        if (shoppingTypeSelect) {
-            shoppingTypeSelect.value = subTabId;
-        }
-    }
-}function openSubTab(evt, parentId, subTabId) {
-    const parentContainer = document.getElementById(parentId);
-    const subContents = parentContainer.getElementsByClassName("sub-tab-content");
 
-    for (let i = 0; i < subContents.length; i++) {
-        subContents[i].style.display = "none";
-    }
+    // SHOPPING
+    if (parentId === "shopping") {
+        const typeSelect = document.getElementById("shop-type");
 
-    const subLinks = parentContainer.getElementsByClassName("sub-tab-link");
-    for (let i = 0; i < subLinks.length; i++) {
-        subLinks[i].className = subLinks[i].className.replace(" active", "");
-    }
+        if (typeSelect) {
+            const formRow = typeSelect.closest(".form-row");
+            const isAllView = subTabId === "shop-all";
 
-    document.getElementById(subTabId).style.display = "block";
-    evt.currentTarget.className += " active";
-    activeSubTabs[parentId] = subTabId;
+            // Crew / Steph selector is only needed on All
+            typeSelect.hidden = !isAllView;
 
-    // When a specific Projects category is selected, automatically
-    // set the Add Project category selector to match that tab.
-    if (parentId === "projects" && subTabId !== "proj-all") {
-        const projectTypeSelect = document.getElementById("project-type");
-        if (projectTypeSelect) {
-            projectTypeSelect.value = subTabId;
+            // On a specific list, automatically use that list
+            if (!isAllView) {
+                typeSelect.value = subTabId;
+            }
+
+            if (formRow) {
+                formRow.classList.toggle(
+                    "category-hidden",
+                    !isAllView
+                );
+            }
         }
     }
 }
-
 
 // SEARCHABLE COMBOBOX DROPDOWN PROCESSING SCRIPTS
 function toggleCombo(inputEl) {
@@ -438,7 +459,15 @@ function addProjectItem(propInputId, textInputId, typeSelectId) {
         return;
     }
 
-    const targetType = typeSelect.value;
+    const activeProjectTab = activeSubTabs.projects;
+
+    // If we're viewing All, use the dropdown.
+    // Otherwise, the active tab determines the category.
+    const targetType =
+        activeProjectTab === "proj-all"
+            ? typeSelect.value
+            : activeProjectTab;
+
     const allowedTypes = new Set([
         "proj-oneoff",
         "proj-current",
@@ -451,7 +480,11 @@ function addProjectItem(propInputId, textInputId, typeSelectId) {
         return;
     }
 
-    executeFormPost(targetType, propInputId, textInputId);
+    executeFormPost(
+        targetType,
+        propInputId,
+        textInputId
+    );
 }
 
 function addShoppingItem(propInputId, textInputId, typeSelectId) {
@@ -462,7 +495,15 @@ function addShoppingItem(propInputId, textInputId, typeSelectId) {
         return;
     }
 
-    const targetType = typeSelect.value;
+    const activeShoppingTab = activeSubTabs.shopping;
+
+    // If we're viewing All, use the dropdown.
+    // Otherwise, the active tab determines the list.
+    const targetType =
+        activeShoppingTab === "shop-all"
+            ? typeSelect.value
+            : activeShoppingTab;
+
     const allowedTypes = new Set([
         "shop-crew",
         "shop-steph"
@@ -473,7 +514,11 @@ function addShoppingItem(propInputId, textInputId, typeSelectId) {
         return;
     }
 
-    executeFormPost(targetType, propInputId, textInputId);
+    executeFormPost(
+        targetType,
+        propInputId,
+        textInputId
+    );
 }
 
 // SEND NEW ITEM TO GOOGLE SHEETS
