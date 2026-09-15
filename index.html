@@ -47,32 +47,64 @@
         </div>
 
         <!-- 2. PROJECTS TAB PANEL (WITH SUB-CATEGORIES) -->
-        <div id="projects" class="tab-content">
-            <div class="sub-tabs-bar">
-                <button class="sub-tab-link active" onclick="openSubTab(event, 'projects', 'proj-oneoff')">One-Off</button>
-                <button class="sub-tab-link" onclick="openSubTab(event, 'projects', 'proj-current')">Current</button>
-                <button class="sub-tab-link" onclick="openSubTab(event, 'projects', 'proj-upcoming')">Upcoming</button>
-                <button class="sub-tab-link" onclick="openSubTab(event, 'projects', 'proj-major')">Major</button>
+<div id="projects" class="tab-content">
+    <div class="sub-tabs-bar">
+        <button class="sub-tab-link active" onclick="openSubTab(event, 'projects', 'proj-all')">All</button>
+        <button class="sub-tab-link" onclick="openSubTab(event, 'projects', 'proj-oneoff')">One-Off</button>
+        <button class="sub-tab-link" onclick="openSubTab(event, 'projects', 'proj-current')">Current</button>
+        <button class="sub-tab-link" onclick="openSubTab(event, 'projects', 'proj-upcoming')">Upcoming</button>
+        <button class="sub-tab-link" onclick="openSubTab(event, 'projects', 'proj-major')">Major</button>
+    </div>
+
+    <div class="inline-form">
+        <h4>Add Project Entry</h4>
+        <div class="form-row">
+            <div class="combobox-wrapper">
+                <input type="text" id="project-prop" class="combo-input" placeholder="Select property..." onclick="toggleCombo(this)" oninput="filterCombo(this)">
+                <button class="combo-arrow" onclick="arrowToggleCombo(this, event)">▼</button>
+                <div class="combo-dropdown"></div>
             </div>
 
-            <div class="inline-form">
-                <h4>Add Project Entry</h4>
-                <div class="form-row">
-                    <div class="combobox-wrapper">
-                        <input type="text" id="project-prop" class="combo-input" placeholder="Select property..." onclick="toggleCombo(this)" oninput="filterCombo(this)">
-                        <button class="combo-arrow" onclick="arrowToggleCombo(this, event)">▼</button>
-                        <div class="combo-dropdown"></div>
-                    </div>
-                    <input type="text" id="project-text" placeholder="Project tasks, notes, or descriptions...">
-                    <button class="action-btn" onclick="addContextualItem('projects', 'project-prop', 'project-text')">Add Project</button>
-                </div>
-            </div>
+            <select id="project-type" class="project-type-select" aria-label="Project category">
+                <option value="proj-oneoff">One-Off</option>
+                <option value="proj-current">Current</option>
+                <option value="proj-upcoming">Upcoming</option>
+                <option value="proj-major">Major</option>
+            </select>
 
-            <div id="proj-oneoff" class="sub-tab-content default-sub-active"><div id="proj-oneoff-container"></div></div>
-            <div id="proj-current" class="sub-tab-content"><div id="proj-current-container"></div></div>
-            <div id="proj-upcoming" class="sub-tab-content"><div id="proj-upcoming-container"></div></div>
-            <div id="proj-major" class="sub-tab-content"><div id="proj-major-container"></div></div>
+            <input type="text" id="project-text" placeholder="Project tasks, notes, or descriptions...">
+            <button class="action-btn" onclick="addProjectItem('project-prop', 'project-text', 'project-type')">Add Project</button>
         </div>
+    </div>
+
+    <div id="proj-all" class="sub-tab-content default-sub-active">
+        <div class="project-all-section">
+            <h3 class="project-section-title proj-oneoff-title">One-Off</h3>
+            <div id="proj-all-oneoff-container"></div>
+        </div>
+
+        <div class="project-all-section">
+            <h3 class="project-section-title proj-current-title">Current</h3>
+            <div id="proj-all-current-container"></div>
+        </div>
+
+        <div class="project-all-section">
+            <h3 class="project-section-title proj-upcoming-title">Upcoming</h3>
+            <div id="proj-all-upcoming-container"></div>
+        </div>
+
+        <div class="project-all-section">
+            <h3 class="project-section-title proj-major-title">Major</h3>
+            <div id="proj-all-major-container"></div>
+        </div>
+    </div>
+
+    <div id="proj-oneoff" class="sub-tab-content"><div id="proj-oneoff-container"></div></div>
+    <div id="proj-current" class="sub-tab-content"><div id="proj-current-container"></div></div>
+    <div id="proj-upcoming" class="sub-tab-content"><div id="proj-upcoming-container"></div></div>
+    <div id="proj-major" class="sub-tab-content"><div id="proj-major-container"></div></div>
+</div>
+
 
         <!-- 3. NEW INDEPENDENT ISSUES VIEW PANEL -->
         <div id="issue" class="tab-content">
@@ -142,6 +174,6 @@
 
     </div>
 
-    <script src="app.js?v=3"></script>
+    <script src="app.js?v=4"></script>
 </body>
 </html>
