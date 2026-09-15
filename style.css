@@ -361,4 +361,126 @@ body {
         width: 100%;
     }
 }
+/* =========================================
+   MOBILE PROJECT + SHOPPING FORM FIXES
+   ========================================= */
+
+@media (max-width: 768px) {
+
+    /* ---------- PROJECTS ---------- */
+
+    #projects .form-row {
+        display: grid;
+        grid-template-columns: 110px minmax(0, 1fr);
+        gap: 10px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Property selector always gets its own full row */
+    #projects .combobox-wrapper {
+        grid-column: 1 / -1;
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    #projects .combobox-wrapper .combo-input {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Small category dropdown on All */
+    #projects .project-type-select {
+        grid-column: 1;
+        width: 110px;
+        min-width: 0;
+        max-width: 110px;
+        box-sizing: border-box;
+    }
+
+    /* Give Project notes the majority of the row */
+    #projects .project-description-input {
+        grid-column: 2;
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        min-height: 72px;
+        box-sizing: border-box;
+    }
+
+    /*
+       On One-Off / Current / Upcoming / Major,
+       category dropdown is hidden, so let the
+       description use the ENTIRE row.
+    */
+    #projects .form-row.category-hidden
+    .project-description-input {
+        grid-column: 1 / -1;
+    }
+
+    #projects .action-btn {
+        grid-column: 1 / -1;
+        width: 100%;
+    }
+
+
+    /* ---------- SHOPPING ---------- */
+
+    #shopping .form-row {
+        display: grid;
+        grid-template-columns: 110px minmax(0, 1fr);
+        gap: 10px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    #shopping .combobox-wrapper {
+        grid-column: 1 / -1;
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    #shopping .combobox-wrapper .combo-input {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    #shopping .shop-type-select {
+        grid-column: 1;
+        width: 110px;
+        min-width: 0;
+        max-width: 110px;
+        box-sizing: border-box;
+    }
+
+    #shopping #shop-text {
+        grid-column: 2;
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    /*
+       On Crew or Steph specifically,
+       there is no selector, so the item
+       description gets the full row.
+    */
+    #shopping .form-row.category-hidden #shop-text {
+        grid-column: 1 / -1;
+    }
+
+    #shopping .action-btn {
+        grid-column: 1 / -1;
+        width: 100%;
+    }
+}
 
