@@ -3,7 +3,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbyOm02wepjqjwNJua6Jv8fg
 
 // Master list arrays cached locally for interface filters
 let globalProperties = [];
-let activeSubTabs = { projects: "proj-all", shopping: "shop-crew" };
+let activeSubTabs = { projects: "proj-all", shopping: "shop-all" };
 
 // Track submissions that have been sent to Google Sheets but not yet confirmed
 const pendingSubmissions = new Map();
@@ -31,6 +31,40 @@ function openMainTab(evt, tabName) {
 
 // NESTED CHILD SUB-TAB NAVIGATION ROUTING
 function openSubTab(evt, parentId, subTabId) {
+    const parentContainer = document.getElementById(parentId);
+    const subContents = parentContainer.getElementsByClassName("sub-tab-content");
+
+    for (let i = 0; i < subContents.length; i++) {
+        subContents[i].style.display = "none";
+    }
+
+    const subLinks = parentContainer.getElementsByClassName("sub-tab-link");
+    for (let i = 0; i < subLinks.length; i++) {
+        subLinks[i].className = subLinks[i].className.replace(" active", "");
+    }
+
+    document.getElementById(subTabId).style.display = "block";
+    evt.currentTarget.className += " active";
+    activeSubTabs[parentId] = subTabId;
+
+    // When a specific Projects category is selected, automatically
+    // set the Add Project category selector to match that tab.
+    if (parentId === "projects" && subTabId !== "proj-all") {
+        const projectTypeSelect = document.getElementById("project-type");
+        if (projectTypeSelect) {
+            projectTypeSelect.value = subTabId;
+        }
+    }
+
+    // Do the same for Shopping. "All" is display-only and is never
+    // written into Google Sheets as an item type.
+    if (parentId === "shopping" && subTabId !== "shop-all") {
+        const shoppingTypeSelect = document.getElementById("shop-type");
+        if (shoppingTypeSelect) {
+            shoppingTypeSelect.value = subTabId;
+        }
+    }
+}function openSubTab(evt, parentId, subTabId) {
     const parentContainer = document.getElementById(parentId);
     const subContents = parentContainer.getElementsByClassName("sub-tab-content");
 
@@ -155,6 +189,8 @@ function handleSheetData(items) {
             "proj-major",
             "issue",
             "walkthrough",
+            "shop-all-crew",
+            "shop-all-steph",
             "shop-crew",
             "shop-steph"
         ];
@@ -164,6 +200,11 @@ function handleSheetData(items) {
             "proj-current": "proj-all-current-container",
             "proj-upcoming": "proj-all-upcoming-container",
             "proj-major": "proj-all-major-container"
+        };
+
+        const shoppingAllContainers = {
+            "shop-crew": "shop-all-crew-container",
+            "shop-steph": "shop-all-steph-container"
         };
 
         const counts = {
@@ -239,6 +280,18 @@ function handleSheetData(items) {
                 }
             }
 
+            // Also place Shopping items into the matching grouped section of All.
+            const allShoppingContainerId = shoppingAllContainers[item.type];
+
+            if (allShoppingContainerId) {
+                const allShoppingContainer =
+                    document.getElementById(allShoppingContainerId);
+
+                if (allShoppingContainer) {
+                    allShoppingContainer.innerHTML += cardHtml;
+                }
+            }
+
             // Overview Dashboard feed generation rules
             if (
                 item.type === "overview" ||
@@ -274,7 +327,7 @@ function handleSheetData(items) {
             cShop.innerText = counts.shopping;
         }
 
-        // Empty-state messages for every register, including each All section.
+        // Empty-state messages for every register, including All sections.
         subCategories.forEach(category => {
             const container = document.getElementById(`${category}-container`);
 
@@ -332,6 +385,8 @@ function loadDashboard(showLoading = true, loadProperties = true) {
             "proj-major",
             "issue",
             "walkthrough",
+            "shop-all-crew",
+            "shop-all-steph",
             "shop-crew",
             "shop-steph"
         ];
@@ -393,6 +448,28 @@ function addProjectItem(propInputId, textInputId, typeSelectId) {
 
     if (!allowedTypes.has(targetType)) {
         alert("Please select a valid project category.");
+        return;
+    }
+
+    executeFormPost(targetType, propInputId, textInputId);
+}
+
+function addShoppingItem(propInputId, textInputId, typeSelectId) {
+    const typeSelect = document.getElementById(typeSelectId);
+
+    if (!typeSelect) {
+        console.error("Shopping list selector not found.");
+        return;
+    }
+
+    const targetType = typeSelect.value;
+    const allowedTypes = new Set([
+        "shop-crew",
+        "shop-steph"
+    ]);
+
+    if (!allowedTypes.has(targetType)) {
+        alert("Please select a valid shopping list.");
         return;
     }
 
