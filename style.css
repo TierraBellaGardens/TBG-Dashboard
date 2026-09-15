@@ -483,4 +483,206 @@ body {
         width: 100%;
     }
 }
+/* =========================================
+   PROJECT + SHOPPING FORM LAYOUT FIX
+   ========================================= */
 
+/* PROJECTS — laptop / desktop */
+#projects .form-row {
+    display: grid;
+    grid-template-columns:
+        minmax(180px, 1fr)
+        140px
+        minmax(260px, 2fr)
+        auto;
+    gap: 10px;
+    align-items: stretch;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#projects .combobox-wrapper {
+    grid-column: 1;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+#projects .combobox-wrapper .combo-input {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+#projects .project-type-select {
+    grid-column: 2;
+    width: 100%;
+    min-width: 0;
+    max-width: 140px;
+    box-sizing: border-box;
+}
+
+#projects .project-description-input {
+    grid-column: 3;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+#projects .action-btn {
+    grid-column: 4;
+}
+
+
+/* When category is hidden on One-Off / Current /
+   Upcoming / Major, give notes the extra space */
+#projects .form-row.category-hidden {
+    grid-template-columns:
+        minmax(180px, 1fr)
+        minmax(320px, 2.5fr)
+        auto;
+}
+
+#projects .form-row.category-hidden .combobox-wrapper {
+    grid-column: 1;
+}
+
+#projects .form-row.category-hidden .project-description-input {
+    grid-column: 2;
+}
+
+#projects .form-row.category-hidden .action-btn {
+    grid-column: 3;
+}
+
+
+/* SHOPPING — same stable laptop layout */
+#shopping .form-row {
+    display: grid;
+    grid-template-columns:
+        minmax(180px, 1fr)
+        130px
+        minmax(260px, 2fr)
+        auto;
+    gap: 10px;
+    align-items: stretch;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#shopping .combobox-wrapper {
+    grid-column: 1;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+#shopping .combobox-wrapper .combo-input {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+#shopping .shop-type-select {
+    grid-column: 2;
+    width: 100%;
+    min-width: 0;
+    max-width: 130px;
+    box-sizing: border-box;
+}
+
+#shopping #shop-text {
+    grid-column: 3;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+#shopping .action-btn {
+    grid-column: 4;
+}
+
+
+/* Crew / Steph specific tabs */
+#shopping .form-row.category-hidden {
+    grid-template-columns:
+        minmax(180px, 1fr)
+        minmax(260px, 2fr)
+        auto;
+}
+
+#shopping .form-row.category-hidden .combobox-wrapper {
+    grid-column: 1;
+}
+
+#shopping .form-row.category-hidden #shop-text {
+    grid-column: 2;
+}
+
+#shopping .form-row.category-hidden .action-btn {
+    grid-column: 3;
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 768px) {
+
+    #projects .form-row,
+    #shopping .form-row {
+        grid-template-columns: 105px minmax(0, 1fr);
+    }
+
+    #projects .combobox-wrapper,
+    #shopping .combobox-wrapper {
+        grid-column: 1 / -1;
+    }
+
+    #projects .project-type-select,
+    #shopping .shop-type-select {
+        grid-column: 1;
+        width: 105px;
+        max-width: 105px;
+    }
+
+    #projects .project-description-input,
+    #shopping #shop-text {
+        grid-column: 2;
+    }
+
+    #projects .action-btn,
+    #shopping .action-btn {
+        grid-column: 1 / -1;
+        width: 100%;
+    }
+
+    /* Specific category/list tabs:
+       description gets the whole row */
+    #projects .form-row.category-hidden,
+    #shopping .form-row.category-hidden {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    #projects .form-row.category-hidden .combobox-wrapper,
+    #shopping .form-row.category-hidden .combobox-wrapper {
+        grid-column: 1;
+    }
+
+    #projects .form-row.category-hidden .project-description-input,
+    #shopping .form-row.category-hidden #shop-text {
+        grid-column: 1;
+    }
+
+    #projects .form-row.category-hidden .action-btn,
+    #shopping .form-row.category-hidden .action-btn {
+        grid-column: 1;
+    }
+}
