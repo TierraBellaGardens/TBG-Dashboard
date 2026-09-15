@@ -3,7 +3,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbyOm02wepjqjwNJua6Jv8fg
 
 // Master list arrays cached locally for interface filters
 let globalProperties = [];
-let activeSubTabs = { projects: "proj-oneoff", shopping: "shop-crew" };
+let activeSubTabs = { projects: "proj-all", shopping: "shop-crew" };
 
 // Track submissions that have been sent to Google Sheets but not yet confirmed
 const pendingSubmissions = new Map();
@@ -46,6 +46,15 @@ function openSubTab(evt, parentId, subTabId) {
     document.getElementById(subTabId).style.display = "block";
     evt.currentTarget.className += " active";
     activeSubTabs[parentId] = subTabId;
+
+    // When a specific Projects category is selected, automatically
+    // set the Add Project category selector to match that tab.
+    if (parentId === "projects" && subTabId !== "proj-all") {
+        const projectTypeSelect = document.getElementById("project-type");
+        if (projectTypeSelect) {
+            projectTypeSelect.value = subTabId;
+        }
+    }
 }
 
 
@@ -136,6 +145,10 @@ function handleSheetData(items) {
     try {
         const subCategories = [
             "overview",
+            "proj-all-oneoff",
+            "proj-all-current",
+            "proj-all-upcoming",
+            "proj-all-major",
             "proj-oneoff",
             "proj-current",
             "proj-upcoming",
@@ -146,6 +159,13 @@ function handleSheetData(items) {
             "shop-steph"
         ];
 
+        const projectAllContainers = {
+            "proj-oneoff": "proj-all-oneoff-container",
+            "proj-current": "proj-all-current-container",
+            "proj-upcoming": "proj-all-upcoming-container",
+            "proj-major": "proj-all-major-container"
+        };
+
         const counts = {
             projects: 0,
             issue: 0,
@@ -154,11 +174,8 @@ function handleSheetData(items) {
         };
 
         // Clear containers only after fresh data has actually arrived.
-        // This means background refreshes leave the current cards visible
-        // while Google Sheets is still responding.
         subCategories.forEach(category => {
             const el = document.getElementById(`${category}-container`);
-
             if (el) {
                 el.innerHTML = "";
             }
@@ -177,7 +194,6 @@ function handleSheetData(items) {
             const cleanId =
                 item.id || Math.random().toString(36).substring(2, 9);
 
-            // Map counter configurations dynamically
             if (item.type.startsWith("proj-")) {
                 counts.projects++;
             }
@@ -204,11 +220,23 @@ function handleSheetData(items) {
                 </div>
             `;
 
-            // Safety check container existence before innerHTML push
+            // Normal category-specific view
             const container = document.getElementById(`${item.type}-container`);
 
             if (container) {
                 container.innerHTML += cardHtml;
+            }
+
+            // Also place Projects into the matching grouped section of All.
+            const allProjectContainerId = projectAllContainers[item.type];
+
+            if (allProjectContainerId) {
+                const allProjectContainer =
+                    document.getElementById(allProjectContainerId);
+
+                if (allProjectContainer) {
+                    allProjectContainer.innerHTML += cardHtml;
+                }
             }
 
             // Overview Dashboard feed generation rules
@@ -225,7 +253,6 @@ function handleSheetData(items) {
             }
         });
 
-        // Push calculated badge numbers onto menu titles
         const cProj = document.getElementById("count-projects");
         const cIss = document.getElementById("count-issue");
         const cWalk = document.getElementById("count-walkthrough");
@@ -247,7 +274,7 @@ function handleSheetData(items) {
             cShop.innerText = counts.shopping;
         }
 
-        // Render localized empty-register fallback elements
+        // Empty-state messages for every register, including each All section.
         subCategories.forEach(category => {
             const container = document.getElementById(`${category}-container`);
 
@@ -263,8 +290,6 @@ function handleSheetData(items) {
                 '<div class="loading-placeholder">Dashboard operational clear. No tasks pending.</div>';
         }
 
-        // Confirm any submissions that are still waiting for Google Sheets.
-        // This MUST happen after all returned items have been processed.
         checkPendingSubmissions(items);
 
     } catch (error) {
@@ -279,8 +304,6 @@ function loadDashboard(showLoading = true, loadProperties = true) {
         return;
     }
 
-    // Property names only need to refresh during a normal/full load.
-    // Background submission checks skip this extra request.
     if (loadProperties) {
         const oldPropScript =
             document.getElementById("property-jsonp-script");
@@ -297,10 +320,12 @@ function loadDashboard(showLoading = true, loadProperties = true) {
         document.body.appendChild(propScript);
     }
 
-    // Only blank the task areas and show "Syncing data..." on a full load.
-    // Silent background refreshes leave existing entries visible.
     if (showLoading) {
         const subCategories = [
+            "proj-all-oneoff",
+            "proj-all-current",
+            "proj-all-upcoming",
+            "proj-all-major",
             "proj-oneoff",
             "proj-current",
             "proj-upcoming",
@@ -337,6 +362,7 @@ function loadDashboard(showLoading = true, loadProperties = true) {
 }
 
 
+
 // SUBMISSION PIPELINE ROUTERS
 function addCustomItem(typeKey, propInputId, textInputId) {
     executeFormPost(typeKey, propInputId, textInputId);
@@ -349,6 +375,29 @@ function addContextualItem(parentTabKey, propInputId, textInputId) {
     executeFormPost(contextualType, propInputId, textInputId);
 }
 
+function addProjectItem(propInputId, textInputId, typeSelectId) {
+    const typeSelect = document.getElementById(typeSelectId);
+
+    if (!typeSelect) {
+        console.error("Project category selector not found.");
+        return;
+    }
+
+    const targetType = typeSelect.value;
+    const allowedTypes = new Set([
+        "proj-oneoff",
+        "proj-current",
+        "proj-upcoming",
+        "proj-major"
+    ]);
+
+    if (!allowedTypes.has(targetType)) {
+        alert("Please select a valid project category.");
+        return;
+    }
+
+    executeFormPost(targetType, propInputId, textInputId);
+}
 
 // SEND NEW ITEM TO GOOGLE SHEETS
 async function executeFormPost(targetType, propId, textId) {
